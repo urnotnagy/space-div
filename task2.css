@@ -1,0 +1,72 @@
+/* Basic Page Setup */
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #000000; 
+  color: #333;
+}
+
+/* Parallax Layers */
+#parallax-layer-bg,
+#parallax-layer-mid1,
+#parallax-layer-mid2,
+#parallax-layer-fg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#parallax-layer-bg {
+  z-index: 1;
+  background: linear-gradient(to bottom, #000011, #0c0c2c); /* Deep space starfield */
+}
+
+#parallax-layer-mid1 {
+  z-index: 2;
+  background: linear-gradient(135deg, #1a0033, #330066, #4d0099); /* Nebula colors */
+}
+
+#parallax-layer-mid2 {
+  z-index: 3;
+  background: linear-gradient(to bottom right, #2c3e50, #465a70, #1f2833); /* Distant planetary/gaseous texture */
+}
+
+#parallax-layer-fg {
+  z-index: 4;
+  background-color: #05050a; 
+}
+
+/* Content Sections */
+.content-section {
+  position: relative; 
+  z-index: 10; 
+  padding: 50px;
+  margin: 0 auto; 
+  max-width: 800px; 
+  background-color: rgba(255, 255, 255, 0.85); 
+  min-height: 100vh; 
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+
+.content-section h2 {
+  margin-top: 0;
+  color: #111;
+}
+
+.content-section p {
+  line-height: 1.6;
+}
+
+/* Asteroid Styling */
+.asteroid { 
+  position: fixed;
+  z-index: 5; 
+  width: 100px; 
+  height: auto;   
+  pointer-events: none; 
+  
+}
