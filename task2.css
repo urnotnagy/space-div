@@ -3,58 +3,63 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  background-color: #000000; 
+  background-color: #000000;
+  background-image: url('assets/img/space_stars.png');
+  background-repeat: repeat;
+  background-attachment: fixed; /* Ensures the body background doesn't scroll */
   color: #333;
 }
 
-/* Parallax Layers */
-#parallax-layer-bg,
-#parallax-layer-mid1,
-#parallax-layer-mid2,
+/* New Parallax Star Layer */
+#parallax-stars-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('assets/img/space_stars.png');
+  background-repeat: repeat;
+  background-size: 150%; /* Stars appear larger */
+  z-index: 0; /* Between body background and other elements like planets */
+  pointer-events: none;
+  will-change: transform; /* For parallax animation */
+}
+
+/* Old #parallax-layer-fg might not be needed if body handles the base black and static stars.
+   Keeping it for now in case it serves another purpose, but its background might be redundant.
+   If it was just for a black background, the body now handles that.
+   Let's assume it might be used for other foreground effects later as per its name.
+*/
 #parallax-layer-fg {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 1; /* Adjusted z-index, above parallax-stars-layer */
+  /* background-color: #000000; */ /* Base black for space - potentially remove if body bg is enough */
+  pointer-events: none; /* Typically foreground layers for effects shouldn't intercept clicks */
 }
 
-#parallax-layer-bg {
-  z-index: 1;
-  background: linear-gradient(to bottom, #000011, #0c0c2c); /* Deep space starfield */
-}
-
-#parallax-layer-mid1 {
-  z-index: 2;
-  background: linear-gradient(135deg, #1a0033, #330066, #4d0099); /* Nebula colors */
-}
-
-#parallax-layer-mid2 {
-  z-index: 3;
-  background: linear-gradient(to bottom right, #2c3e50, #465a70, #1f2833); /* Distant planetary/gaseous texture */
-}
-
-#parallax-layer-fg {
-  z-index: 4;
-  background-color: #05050a; 
-}
+/* Old star layer CSS removed */
 
 /* Content Sections */
 .content-section {
-  position: relative; 
-  z-index: 10; 
+  position: relative;
+  z-index: 10; /* Ensure content is above all parallax layers */
   padding: 50px;
-  margin: 0 auto; 
-  max-width: 800px; 
-  background-color: rgba(255, 255, 255, 0.85); 
-  min-height: 100vh; 
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  margin: 0 auto;
+  max-width: 800px;
+  background-color: rgba(255, 255, 255, 0.1); /* Make content slightly transparent to see space */
+  color: #f0f0f0; /* Light text color for readability on dark background */
+  min-height: 100vh;
+  box-shadow: 0 0 15px rgba(255,255,255,0.1); /* Subtle glow for content */
 }
 
 
 .content-section h2 {
   margin-top: 0;
-  color: #111;
+  color: #FFFFFF; /* Changed to white for better visibility */
 }
 
 .content-section p {
@@ -62,11 +67,50 @@ html, body {
 }
 
 /* Asteroid Styling */
-.asteroid { 
-  position: fixed;
-  z-index: 5; 
-  width: 100px; 
-  height: auto;   
-  pointer-events: none; 
-  
+.asteroid {
+    position: fixed;
+    z-index: 5;
+    /* width: 100px; // Will be randomized by JS */
+    min-width: 30px; /* Minimum size for asteroids */
+    max-width: 120px; /* Maximum size for asteroids */
+    height: auto;
+    pointer-events: none;
+    opacity: 0.9; /* Base opacity, can be randomized by JS */
+    will-change: transform; /* Performance hint for animations */
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); /* Subtle shadow for depth */
 }
+
+/* Planet Styling */
+.planet-container {
+    position: relative; /* Allows absolute positioning of planets within */
+    height: 300px; /* Adjust as needed, provides space for planet to appear */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Ensures planets don't show outside their intended reveal area initially */
+    z-index: 2; /* Above stars, below content sections and asteroids */
+}
+
+.planet {
+    position: absolute;
+    /* width: 200px; */ /* Removed placeholder width, using image's natural width */
+    /* height: 200px; */ /* Removed placeholder height, using image's natural height */
+    /* border-radius: 50%; */ /* Removed, images have their own shape */
+    display: block; /* Changed from flex as it's an img now */
+    /* justify-content: center; */ /* Removed */
+    /* align-items: center; */ /* Removed */
+    /* color: white; */ /* Removed, no placeholder text */
+    /* font-weight: bold; */ /* Removed */
+    /* text-align: center; */ /* Removed */
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.5s ease-in-out; /* Smooth reveal */
+    will-change: transform, opacity; /* Performance hint */
+    box-shadow: 0 0 20px rgba(0,0,0,0.5); /* Subtle shadow for depth */
+    max-width: 300px; /* Added max-width to prevent overly large planets */
+    height: auto;     /* Maintain aspect ratio with max-width */
+}
+
+/* Placeholder styles for individual planets removed as images are used now */
+/* #planet-1 { ... } */
+/* #planet-2 { ... } */
+/* #planet-3 { ... } */

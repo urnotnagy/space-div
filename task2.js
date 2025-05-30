@@ -1,75 +1,131 @@
+const NUM_ASTEROIDS = 50;
+const ASTEROID_IMAGES = [
+    "https://i.imgur.com/yIbmDYw.png",
+    "https://i.imgur.com/MZutMpv.png",
+    "https://i.imgur.com/AZumOFI.png"
+];
+
+const PLANETS_DATA = [
+    { id: 'planet-1', containerId: 'planet-1-container', text: 'Planet Alpha', revealDepth: 600, factor: 0.3, image: 'assets/img/planet_alpha.webp' },
+    { id: 'planet-2', containerId: 'planet-2-container', text: 'Planet Beta', revealDepth: 1500, factor: 0.25, image: 'assets/img/planet_beta.webp' },
+    { id: 'planet-3', containerId: 'planet-3-container', text: 'Planet Gamma', revealDepth: 2400, factor: 0.35, image: 'assets/img/planet_gamma.webpm' }
+];
+
+// Function to create and append planets
+function createPlanets() {
+    PLANETS_DATA.forEach(planetData => {
+        const planetContainer = document.getElementById(planetData.containerId);
+        if (planetContainer) {
+            const planetElement = document.createElement('img');
+            planetElement.id = planetData.id;
+            planetElement.classList.add('planet');
+            planetElement.src = planetData.image;
+            planetElement.alt = planetData.text;
+            planetElement.style.opacity = '0'; // Start hidden, reveal on scroll
+
+            planetElement.dataset.factor = planetData.factor;
+            planetElement.dataset.revealDepth = planetData.revealDepth;
+            
+            planetContainer.appendChild(planetElement);
+        } else {
+            console.error(`Container with ID ${planetData.containerId} not found for planet ${planetData.id}`);
+        }
+    });
+}
+
+// Function to create and append asteroids
+function createAsteroids() {
+    const fragment = document.createDocumentFragment();
+    for (let i = 0; i < NUM_ASTEROIDS; i++) {
+        const asteroid = document.createElement('img');
+        asteroid.classList.add('asteroid'); // Removed 'rocks' class if not used elsewhere
+        asteroid.src = ASTEROID_IMAGES[Math.floor(Math.random() * ASTEROID_IMAGES.length)];
+        
+        const minWidth = 30;
+        const maxWidth = 120;
+        asteroid.style.width = Math.floor(Math.random() * (maxWidth - minWidth + 1) + minWidth) + 'px';
+        asteroid.style.opacity = (Math.random() * 0.3 + 0.7).toFixed(2);
+
+        asteroid.dataset.factor = (Math.random() * -0.6 - 0.2).toFixed(2);
+        asteroid.dataset.horizontalFactor = (Math.random() * 0.5 - 0.25).toFixed(2);
+        asteroid.dataset.rotationFactor = (Math.random() * 0.1 - 0.05).toFixed(2);
+        
+        fragment.appendChild(asteroid);
+    }
+    document.body.appendChild(fragment); // Append asteroids to body
+}
+
 // Function to scatter asteroids
 function scatterAsteroids() {
     const asteroids = document.querySelectorAll('.asteroid');
-    const scrollHeight = document.body.scrollHeight;
+    const scrollHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
     const viewportWidth = window.innerWidth;
 
     asteroids.forEach(asteroid => {
-        // Ensure the asteroid has position: fixed or absolute for top/left to work as expected.
-        // This should ideally be set in CSS.
-        asteroid.style.top = Math.random() * (scrollHeight * 0.8) + 'px';
+        asteroid.style.top = Math.random() * (scrollHeight * 0.9) + 'px'; // Scatter within 90% of scroll height
         asteroid.style.left = Math.random() * viewportWidth + 'px';
     });
 }
 
-// Scatter asteroids on page load
-window.addEventListener('load', scatterAsteroids);
+// Old createStars function removed.
+
+// Initialize elements on page load
+window.addEventListener('load', () => {
+    createPlanets(); // Create planets
+    createAsteroids();
+    scatterAsteroids();
+});
 
 
 // Listen for the scroll event on the window
 window.addEventListener('scroll', function() {
-    // Get the current vertical scroll position
     const scrollY = window.scrollY;
 
-    // --- Handle the four main parallax layers ---
-    // These layers will move downwards at different speeds.
-    const layerBg = document.getElementById('parallax-layer-bg');
-    const layerMid1 = document.getElementById('parallax-layer-mid1');
-    const layerMid2 = document.getElementById('parallax-layer-mid2');
-    const layerFg = document.getElementById('parallax-layer-fg');
+    // Handle foreground layer (if any specific behavior is needed beyond CSS)
+    // const layerFg = document.getElementById('parallax-layer-fg');
+    // if (layerFg) {
+    //     // Example: layerFg.style.transform = `translateY(${scrollY * 0.8}px)`;
+    // }
 
-    if (layerBg) {
-        // Background layer moves the slowest
-        layerBg.style.transform = `translateY(${scrollY * 0.1}px)`;
-    }
-    if (layerMid1) {
-        // Mid-ground layer 1 moves at a moderate speed
-        layerMid1.style.transform = `translateY(${scrollY * 0.3}px)`;
-    }
-    if (layerMid2) {
-        // Mid-ground layer 2 moves a bit faster
-        layerMid2.style.transform = `translateY(${scrollY * 0.6}px)`;
-    }
-    if (layerFg) {
-        // Foreground layer moves the fastest (or nearly with the scroll)
-        layerFg.style.transform = `translateY(${scrollY * 0.9}px)`;
+    // Handle parallax for the new star layer
+    const parallaxStarsLayer = document.getElementById('parallax-stars-layer');
+    if (parallaxStarsLayer) {
+        const parallaxFactorStars = 0.05; // Slow speed for distant stars
+        parallaxStarsLayer.style.transform = `translateY(${scrollY * parallaxFactorStars}px)`;
     }
 
-    // --- Handle the "asteroids" (rock layers) ---
-    // These layers will move upwards at different speeds as the page scrolls down.
-    // Factors are derived from the original script.
-    // Initial positions are now set by scatterAsteroids().
-    const rocksData = [
-        { selector: '#rock-1', factor: -0.8, horizontalFactor: 0.2, rotationFactor: 0.05 },
-        { selector: '#rock-2', factor: -0.6, horizontalFactor: -0.15, rotationFactor: -0.03 },
-        { selector: '#rock-3', factor: -0.4, horizontalFactor: 0.1, rotationFactor: 0.02 },
-        { selector: '#rock-4', factor: -0.5, horizontalFactor: -0.25, rotationFactor: -0.04 },
-        { selector: '#rock-5', factor: -0.7, horizontalFactor: 0.18, rotationFactor: 0.06 },
-        { selector: '#rock-6', factor: -0.7, horizontalFactor: -0.1, rotationFactor: -0.025 },
-        { selector: '#rock-7', factor: -0.5, horizontalFactor: 0.22, rotationFactor: 0.035 },
-        { selector: '#rock-8', factor: -0.2, horizontalFactor: -0.05, rotationFactor: -0.01 },
-        { selector: '#rock-9', factor: -0.4, horizontalFactor: 0.12, rotationFactor: 0.015 }
-    ];
+    // Old star parallax logic removed.
 
-    rocksData.forEach(rockInfo => {
-        const rockElement = document.querySelector(rockInfo.selector);
-        if (rockElement) {
-            // The transform is relative to the initial scattered position.
-            // We are NOT re-setting top/left here, only transform.
-            const verticalMove = scrollY * rockInfo.factor;
-            const horizontalMove = scrollY * rockInfo.horizontalFactor;
-            const rotation = scrollY * rockInfo.rotationFactor;
-            rockElement.style.transform = `translateY(${verticalMove}px) translateX(${horizontalMove}px) rotate(${rotation}deg)`;
+    // Handle asteroids parallax
+    const asteroids = document.querySelectorAll('.asteroid');
+    asteroids.forEach(asteroid => {
+        const factor = parseFloat(asteroid.dataset.factor);
+        const horizontalFactor = parseFloat(asteroid.dataset.horizontalFactor);
+        const rotationFactor = parseFloat(asteroid.dataset.rotationFactor);
+
+        const verticalMove = scrollY * factor;
+        const horizontalMove = scrollY * horizontalFactor;
+        const rotation = scrollY * rotationFactor;
+        asteroid.style.transform = `translateY(${verticalMove}px) translateX(${horizontalMove}px) rotate(${rotation}deg)`;
+    });
+
+    // Handle planets reveal and parallax
+    PLANETS_DATA.forEach(planetData => {
+        const planetElement = document.getElementById(planetData.id);
+        if (planetElement) {
+            const revealDepth = parseFloat(planetElement.dataset.revealDepth);
+            const factor = parseFloat(planetElement.dataset.factor);
+
+            if (scrollY >= revealDepth) {
+                planetElement.style.opacity = '1';
+            } else {
+                planetElement.style.opacity = '0'; // Hide if scrolled back up
+            }
+
+            // Apply parallax only if visible or partially visible for smoother appearance
+            if (planetElement.style.opacity === '1' || scrollY > revealDepth - window.innerHeight) {
+                 planetElement.style.transform = `translateY(${ (scrollY - revealDepth) * factor}px)`;
+            }
         }
     });
 });
