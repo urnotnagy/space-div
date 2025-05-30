@@ -8,10 +8,9 @@ const ASTEROID_IMAGES = [
 const PLANETS_DATA = [
     { id: 'planet-1', containerId: 'planet-1-container', text: 'Planet Alpha', revealDepth: 600, factor: 0.3, image: 'assets/img/planet_alpha.webp' },
     { id: 'planet-2', containerId: 'planet-2-container', text: 'Planet Beta', revealDepth: 1500, factor: 0.25, image: 'assets/img/planet_beta.webp' },
-    { id: 'planet-3', containerId: 'planet-3-container', text: 'Planet Gamma', revealDepth: 2400, factor: 0.35, image: 'assets/img/planet_gamma.webpm' }
+    { id: 'planet-3', containerId: 'planet-3-container', text: 'Planet Gamma', revealDepth: 1900, factor: 0.10, image: 'assets/img/planet_gamma.png' }
 ];
 
-// Function to create and append planets
 function createPlanets() {
     PLANETS_DATA.forEach(planetData => {
         const planetContainer = document.getElementById(planetData.containerId);
@@ -67,9 +66,7 @@ function scatterAsteroids() {
     });
 }
 
-// Old createStars function removed.
 
-// Initialize elements on page load
 window.addEventListener('load', () => {
     createPlanets(); // Create planets
     createAsteroids();
@@ -81,20 +78,15 @@ window.addEventListener('load', () => {
 window.addEventListener('scroll', function() {
     const scrollY = window.scrollY;
 
-    // Handle foreground layer (if any specific behavior is needed beyond CSS)
-    // const layerFg = document.getElementById('parallax-layer-fg');
-    // if (layerFg) {
-    //     // Example: layerFg.style.transform = `translateY(${scrollY * 0.8}px)`;
-    // }
+
 
     // Handle parallax for the new star layer
     const parallaxStarsLayer = document.getElementById('parallax-stars-layer');
     if (parallaxStarsLayer) {
-        const parallaxFactorStars = 0.05; // Slow speed for distant stars
+        const parallaxFactorStars = -0.1; // Negative value to move stars upwards on scroll
         parallaxStarsLayer.style.transform = `translateY(${scrollY * parallaxFactorStars}px)`;
     }
 
-    // Old star parallax logic removed.
 
     // Handle asteroids parallax
     const asteroids = document.querySelectorAll('.asteroid');
